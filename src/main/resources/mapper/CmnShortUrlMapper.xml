@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.missz.repository.CmnShortUrlMapper">
+  <resultMap id="BaseResultMap" type="top.missz.entity.CmnShortUrl">
+    <!--@mbg.generated-->
+    <!--@Table cmn_short_url-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="SHORTS" jdbcType="VARCHAR" property="shorts" />
+    <result column="LONG_URL" jdbcType="LONGVARCHAR" property="longUrl" />
+    <result column="SHORT_URL" jdbcType="VARCHAR" property="shortUrl" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="ISVALID" jdbcType="CHAR" property="isvalid" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, SHORTS, LONG_URL, SHORT_URL, CREATE_TIME, ISVALID, UPDATE_TIME
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from cmn_short_url
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="top.missz.entity.CmnShortUrl" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into cmn_short_url
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="shorts != null">
+        SHORTS,
+      </if>
+      <if test="longUrl != null">
+        LONG_URL,
+      </if>
+      <if test="shortUrl != null">
+        SHORT_URL,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="isvalid != null">
+        ISVALID,
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="shorts != null">
+        #{shorts,jdbcType=VARCHAR},
+      </if>
+      <if test="longUrl != null">
+        #{longUrl,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="shortUrl != null">
+        #{shortUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isvalid != null">
+        #{isvalid,jdbcType=CHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectByShorts" resultMap="BaseResultMap">
+    select *
+    from cmn_short_url where SHORTS = #{shorts,jdbcType=VARCHAR}
+  </select>
+
+  <select id="findAll" resultMap="BaseResultMap">
+    select SHORTS,SHORT_URL from cmn_short_url where ISVALID = 1
+  </select>
+</mapper>

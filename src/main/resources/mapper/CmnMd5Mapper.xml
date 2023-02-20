@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="top.missz.repository.CmnMd5Mapper">
+  <resultMap id="BaseResultMap" type="top.missz.entity.CmnMd5">
+    <!--@mbg.generated-->
+    <!--@Table cmn_md5-->
+    <id column="ID" jdbcType="BIGINT" property="id" />
+    <result column="MD5_KEY" jdbcType="VARCHAR" property="md5Key" />
+    <result column="VALUE" jdbcType="VARCHAR" property="value" />
+    <result column="KEY_LENGTH" jdbcType="INTEGER" property="keyLength" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    ID, MD5_KEY, `VALUE`, KEY_LENGTH
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from cmn_md5
+    where ID = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <!--@mbg.generated-->
+    delete from cmn_md5
+    where ID = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" keyColumn="ID" keyProperty="id" parameterType="top.missz.entity.CmnMd5" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into cmn_md5
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="md5Key != null">
+        MD5_KEY,
+      </if>
+      <if test="value != null">
+        `VALUE`,
+      </if>
+      <if test="keyLength != null">
+        KEY_LENGTH,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="md5Key != null">
+        #{md5Key,jdbcType=VARCHAR},
+      </if>
+      <if test="value != null">
+        #{value,jdbcType=VARCHAR},
+      </if>
+      <if test="keyLength != null">
+        #{keyLength,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateBatch" parameterType="java.util.List">
+    <!--@mbg.generated-->
+    update cmn_md5
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="`VALUE` = case" suffix="end,">
+        <foreach collection="list" index="index" item="item">
+          when ID = #{item.id,jdbcType=BIGINT} then #{item.value,jdbcType=VARCHAR}
+        </foreach>
+      </trim>
+    </trim>
+    where ID in
+    <foreach close=")" collection="list" item="item" open="(" separator=", ">
+      #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="batchInsert" keyColumn="ID" keyProperty="id" parameterType="map" useGeneratedKeys="true">
+    <!--@mbg.generated-->
+    insert into cmn_md5
+    (MD5_KEY, KEY_LENGTH)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.md5Key,jdbcType=VARCHAR}, #{item.keyLength,jdbcType=INTEGER}
+        )
+    </foreach>
+  </insert>
+
+  <select id="selectNotGenerate" resultMap="BaseResultMap">
+    select *
+    from cmn_md5 where ID&gt;#{lastId,jdbcType=BIGINT} and VALUE is null limit 10000
+  </select>
+</mapper>

@@ -1,0 +1,66 @@
+package top.missz.util;
+
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+import top.missz.filter.ShortUrlBloomFilter;
+
+import java.util.Random;
+
+/**
+ * @author wxy
+ */
+@Slf4j
+public class URLUtil {
+    /**
+     * 生成短链接的6个字符
+     *
+     * @return
+     */
+    public static String getShortURL() {
+        Random random = new Random();
+        // 要使用生成 URL 的字符
+        char[] chars = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+                'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5',
+                '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+                'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
+                'U', 'V', 'W', 'X', 'Y', 'Z'
+        };
+        int ln = chars.length;
+        StringBuilder key = new StringBuilder();
+        for (int i = 0; i < 6; ++i) {
+            key.append(chars[random.nextInt(ln)]);
+        }
+        String s = key.toString();
+        //从 BloomFilter 查看是否存在
+        boolean mightContain = ShortUrlBloomFilter.mightContain(s);
+        if (mightContain) {
+            String newS = getShortURL();
+            s = newS;
+            log.debug("{}已存在shorts,重新生成{}", s, newS);
+        }
+        return s;
+    }
+
+    /**
+     * 获取请求的协议域名，端口号生成连接的前半部分
+     *
+     * @param request
+     * @return
+     */
+    public static String getUrlStart(HttpServletRequest request) {
+        StringBuilder url = new StringBuilder();
+        String header = request.getHeader("X-Forwarded-Scheme");
+        if (header != null) {
+            url.append(header);
+        } else {
+            url.append(request.getScheme());
+        }
+        url.append("://").append(request.getServerName());
+        if (request.getServerPort() != 80 && request.getServerPort() != 443) {
+            url.append(":").append(request.getServerPort());
+        }
+        return url.toString();
+    }
+}
+
