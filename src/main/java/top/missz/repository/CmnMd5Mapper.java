@@ -19,4 +19,6 @@ public interface CmnMd5Mapper {
     int batchInsert(@Param("list") List<CmnMd5> list);
 
     List<CmnMd5> selectNotGenerate(@Param("lastId") Long lastId, @Param("limit") int limit);
+
+    List<CmnMd5> getListByLength(@Param("lastId") Long lastId,@Param("length") int length);
 }
