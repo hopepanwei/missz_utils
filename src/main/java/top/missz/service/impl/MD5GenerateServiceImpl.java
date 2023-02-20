@@ -57,7 +57,7 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
             List<CmnMd5> newList = new ArrayList<>();
             listMd5.parallelStream().forEach(bean -> {
                 for (String s : list) {
-                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).build());
+                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).keyLength(length).build());
                 }
             });
             cmnMd5Mapper.batchInsert(newList);
