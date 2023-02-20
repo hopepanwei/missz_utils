@@ -36,7 +36,7 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
     @Override
     public void generateMd5Key(int length) {
         String key = "abcdefghijklmnopqrstuvwxyz0123456789";
-        List<String> list = permutationNoRepeat(Arrays.asList(key.split("")), length);
+        String[] list = key.split("");
 //        List<List<String>> lists = StringUtils.splitList(list, 10000);
 //        for (List<String> strings : lists) {
 //            List<CmnMd5> keys = new ArrayList<>();
