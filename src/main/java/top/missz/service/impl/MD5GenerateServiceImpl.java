@@ -68,7 +68,6 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
     public void generateMd5() {
         generateMd5 = true;
         Long lastId = 0L;
-        MD5 md5 = new MD5();
         while (generateMd5) {
             List<CmnMd5> list = cmnMd5Mapper.selectNotGenerate(lastId, 10000);
             if (list.size() == 0) {
@@ -79,8 +78,10 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
             long startTime = System.currentTimeMillis();
             list.parallelStream().forEach(bean -> {
                 try {
+                    MD5 md5 = new MD5();
                     md5.Update(bean.getMd5Key(), null);
                     String hash = md5.asHex();
+                    md5.Init();
                     bean.setValue(hash);
                 } catch (UnsupportedEncodingException e) {
                     throw new RuntimeException(e);

@@ -79,7 +79,7 @@
 
   <select id="selectNotGenerate" resultMap="BaseResultMap">
     select *
-    from cmn_md5 where ID&gt;#{lastId,jdbcType=BIGINT} and VALUE is null limit 10000
+    from cmn_md5 where ID&gt;#{lastId,jdbcType=BIGINT} and KEY_LENGTH=5 limit 10000
   </select>
 
   <select id="getListByLength" resultMap="BaseResultMap">
