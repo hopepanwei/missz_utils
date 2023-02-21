@@ -8,20 +8,17 @@ import org.springframework.stereotype.Service;
 import top.missz.entity.CmnMd5;
 import top.missz.repository.CmnMd5Mapper;
 import top.missz.service.MD5GenerateService;
-import top.missz.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author zhangpan
- * @date 2023/2/16
+ * @Date 2023/2/16
  */
 @Service
 public class MD5GenerateServiceImpl implements MD5GenerateService {
@@ -31,7 +28,6 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
 
     public static boolean generateMd5 = true;
 
-    public static final LinkedBlockingQueue<String> QUEUE = new LinkedBlockingQueue<>(100000);
 
     @Override
     public void generateMd5Key(int length) {
@@ -94,15 +90,15 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
     }
 
 
-    public static List<String> permutationNoRepeat(List<String> list, int length) {
-        Stream<String> stream = list.stream();
-        for (int n = 1; n < length; n++) {
-            stream = stream.flatMap(str -> list.stream()
-                    .filter(temp -> !str.contains(temp))
-                    .map(str::concat));
-        }
-        return stream.collect(Collectors.toList());
-    }
+//    public static List<String> permutationNoRepeat(List<String> list, int length) {
+//        Stream<String> stream = list.stream();
+//        for (int n = 1; n < length; n++) {
+//            stream = stream.flatMap(str -> list.stream()
+//                    .filter(temp -> !str.contains(temp))
+//                    .map(str::concat));
+//        }
+//        return stream.collect(Collectors.toList());
+//    }
 
     //通过java.math包的BigInteger类实现十六进制的转换
     public static String MD5Operation(String s){
@@ -120,9 +116,6 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
         }
     }
 
-    public CmnMd5Mapper getCmnMd5Mapper() {
-        return cmnMd5Mapper;
-    }
 
     @Autowired
     public void setCmnMd5Mapper(CmnMd5Mapper cmnMd5Mapper) {
