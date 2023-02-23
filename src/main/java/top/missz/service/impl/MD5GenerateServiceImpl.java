@@ -8,13 +8,17 @@ import org.springframework.stereotype.Service;
 import top.missz.entity.CmnMd5;
 import top.missz.repository.CmnMd5Mapper;
 import top.missz.service.MD5GenerateService;
+import top.missz.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author zhangpan
@@ -31,33 +35,33 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
 
     @Override
     public void generateMd5Key(int length) {
-        String key = "abcdefghijklmnopqrstuvwxyz0123456789";
-        String[] list = key.split("");
-//        List<List<String>> lists = StringUtils.splitList(list, 10000);
-//        for (List<String> strings : lists) {
-//            List<CmnMd5> keys = new ArrayList<>();
-//            for (String string : strings) {
-//                keys.add(CmnMd5.builder().md5Key(string)
-//                        .keyLength(length).build());
-//            }
-//            cmnMd5Mapper.batchInsert(keys);
-//        }
-        Long lastId = 0L;
-        while (true){
-            List<CmnMd5> listMd5 = cmnMd5Mapper.getListByLength(lastId, length - 1);
-            if (listMd5.size() == 0) {
-                break;
+        String key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        List<String> list = permutationNoRepeat(Arrays.asList(key.split("")), length);
+        List<List<String>> lists = StringUtils.splitList(list, 10000);
+        for (List<String> strings : lists) {
+            List<CmnMd5> keys = new ArrayList<>();
+            for (String string : strings) {
+                keys.add(CmnMd5.builder().md5Key(string)
+                        .keyLength(length).build());
             }
-            CmnMd5 lastBean = listMd5.get(listMd5.size() - 1);
-            lastId = lastBean.getId();
-            List<CmnMd5> newList = new ArrayList<>();
-            listMd5.parallelStream().forEach(bean -> {
-                for (String s : list) {
-                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).keyLength(length).build());
-                }
-            });
-            cmnMd5Mapper.batchInsert(newList);
+            cmnMd5Mapper.batchInsert(keys);
         }
+//        Long lastId = 0L;
+//        while (true){
+//            List<CmnMd5> listMd5 = cmnMd5Mapper.getListByLength(lastId, length - 1);
+//            if (listMd5.size() == 0) {
+//                break;
+//            }
+//            CmnMd5 lastBean = listMd5.get(listMd5.size() - 1);
+//            lastId = lastBean.getId();
+//            List<CmnMd5> newList = new ArrayList<>();
+//            listMd5.parallelStream().forEach(bean -> {
+//                for (String s : list) {
+//                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).keyLength(length).build());
+//                }
+//            });
+//            cmnMd5Mapper.batchInsert(newList);
+//        }
     }
 
     @Override
@@ -90,15 +94,15 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
     }
 
 
-//    public static List<String> permutationNoRepeat(List<String> list, int length) {
-//        Stream<String> stream = list.stream();
-//        for (int n = 1; n < length; n++) {
-//            stream = stream.flatMap(str -> list.stream()
-//                    .filter(temp -> !str.contains(temp))
-//                    .map(str::concat));
-//        }
-//        return stream.collect(Collectors.toList());
-//    }
+    public static List<String> permutationNoRepeat(List<String> list, int length) {
+        Stream<String> stream = list.stream();
+        for (int n = 1; n < length; n++) {
+            stream = stream.flatMap(str -> list.stream()
+                    .filter(temp -> !str.contains(temp))
+                    .map(str::concat));
+        }
+        return stream.collect(Collectors.toList());
+    }
 
     //通过java.math包的BigInteger类实现十六进制的转换
     public static String MD5Operation(String s){
