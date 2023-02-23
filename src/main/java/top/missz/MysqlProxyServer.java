@@ -22,12 +22,12 @@ public class MysqlProxyServer {
 
     public static class MysqlProxyServerVerticle extends AbstractVerticle {
         private final int port = 8089;
-        private final String mysqlHost = "0.0.0.0";
+        private final String mysqlHost = "missz.cf970gyq9p7j.ap-northeast-1.rds.amazonaws.com";
         @Override
         public void start() throws Exception {
             NetServer netServer = vertx.createNetServer();//创建代理服务器
             NetClient netClient = vertx.createNetClient();//创建连接mysql客户端
-            netServer.connectHandler(socket -> netClient.connect(port, mysqlHost, result -> {
+            netServer.connectHandler(socket -> netClient.connect(3306, mysqlHost, result -> {
                 //响应来自客户端的连接请求，成功之后，在建立一个与目标mysql服务器的连接
                 if (result.succeeded()) {
                     //与目标mysql服务器成功连接连接之后，创造一个MysqlProxyConnection对象,并执行代理方法
