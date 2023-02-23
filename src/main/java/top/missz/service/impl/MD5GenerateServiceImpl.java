@@ -36,32 +36,33 @@ public class MD5GenerateServiceImpl implements MD5GenerateService {
     @Override
     public void generateMd5Key(int length) {
         String key = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        List<String> list = permutationNoRepeat(Arrays.asList(key.split("")), length);
-        List<List<String>> lists = StringUtils.splitList(list, 10000);
-        for (List<String> strings : lists) {
-            List<CmnMd5> keys = new ArrayList<>();
-            for (String string : strings) {
-                keys.add(CmnMd5.builder().md5Key(string)
-                        .keyLength(length).build());
-            }
-            cmnMd5Mapper.batchInsert(keys);
-        }
-//        Long lastId = 0L;
-//        while (true){
-//            List<CmnMd5> listMd5 = cmnMd5Mapper.getListByLength(lastId, length - 1);
-//            if (listMd5.size() == 0) {
-//                break;
+//        List<String> list = permutationNoRepeat(Arrays.asList(key.split("")), length);
+//        List<List<String>> lists = StringUtils.splitList(list, 10000);
+//        for (List<String> strings : lists) {
+//            List<CmnMd5> keys = new ArrayList<>();
+//            for (String string : strings) {
+//                keys.add(CmnMd5.builder().md5Key(string)
+//                        .keyLength(length).build());
 //            }
-//            CmnMd5 lastBean = listMd5.get(listMd5.size() - 1);
-//            lastId = lastBean.getId();
-//            List<CmnMd5> newList = new ArrayList<>();
-//            listMd5.parallelStream().forEach(bean -> {
-//                for (String s : list) {
-//                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).keyLength(length).build());
-//                }
-//            });
-//            cmnMd5Mapper.batchInsert(newList);
+//            cmnMd5Mapper.batchInsert(keys);
 //        }
+        Long lastId = 0L;
+        String[] list = key.split("");
+        while (true){
+            List<CmnMd5> listMd5 = cmnMd5Mapper.getListByLength(lastId, length - 1);
+            if (listMd5.size() == 0) {
+                break;
+            }
+            CmnMd5 lastBean = listMd5.get(listMd5.size() - 1);
+            lastId = lastBean.getId();
+            List<CmnMd5> newList = new ArrayList<>();
+            listMd5.parallelStream().forEach(bean -> {
+                for (String s : list) {
+                    newList.add(CmnMd5.builder().md5Key(bean.getMd5Key() + s).keyLength(length).build());
+                }
+            });
+            cmnMd5Mapper.batchInsert(newList);
+        }
     }
 
     @Override
