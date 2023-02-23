@@ -11,6 +11,7 @@ public class MisszUtilsApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(MisszUtilsApplication.class, args);
+        MysqlProxyServer.main(new String[]{});
     }
 
 }
